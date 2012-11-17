@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  ad_id: 1
+  tag: MyString
+  lat: 1.5
+  long: 1.5
+
+two:
+  ad_id: 1
+  tag: MyString
+  lat: 1.5
+  long: 1.5

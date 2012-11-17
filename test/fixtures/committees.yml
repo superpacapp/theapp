@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  supports: MyString
+  opposes: MyString
+  total_raised: 9.99
+  total_spent: 9.99
+  date_first_filing: 2012-07-06
+
+two:
+  name: MyString
+  supports: MyString
+  opposes: MyString
+  total_raised: 9.99
+  total_spent: 9.99
+  date_first_filing: 2012-07-06

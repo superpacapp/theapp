@@ -1,0 +1,18 @@
+//
+// Prefix header for all source files of the 'SuperPAC' target in the 'SuperPAC' project
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_5_0
+#warning "This project uses features only available in iOS SDK 5.0 and later."
+#endif
+
+#define ARC4RANDOM_MAX      0x100000000
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+    #import "Constants.h"
+    #import "LogHelper.h"
+#endif

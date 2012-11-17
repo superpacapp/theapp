@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  claim_id: 1
+  source_name: MyString
+  source_url: MyString
+  source_title: MyString
+  source_type: MyString
+
+two:
+  claim_id: 1
+  source_name: MyString
+  source_url: MyString
+  source_title: MyString
+  source_type: MyString

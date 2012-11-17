@@ -1,0 +1,348 @@
+//
+//  SPAdDetailsViewController.m
+//  SuperPAC
+//
+//  Created by Andrew Tremblay on 7/24/12.
+//  Copyright (c) 2012 Raizlabs. All rights reserved.
+//
+
+#import "SPAdSourcesViewController.h"
+#import "SPAdDetailsViewController.h"
+#import "SPShareController.h"
+
+#import "NSDictionary+Ad.h"
+#import "NSDictionary+Committee.h"
+#import "LocalyticsSession.h"
+
+
+enum {
+    SPAdDetailsShareActionSheetIndexEmail = 0,
+    SPAdDetailsShareActionSheetIndexSms = 1,
+    SPAdDetailsShareActionSheetIndexTwitter = 2,
+    SPAdDetailsShareActionSheetIndexFacebook = 3
+};
+typedef NSUInteger SPAdDetailsShareActionSheetIndex;
+
+
+@interface SPAdDetailsViewController () 
+    -(void)setDisplayFromConstants;
+-(void)setCustomLayout;
+    -(void)buildNavigationButtons;
+-(void)displayShareActionSheet;
+-(void)backButtonPressed;
+-(void)setPageLayout;
+
+- (void)embedYouTube:(NSString*)url frame:(CGRect)frame;
+
+
+@end
+
+@implementation SPAdDetailsViewController
+@synthesize affiliationLabel = _affiliationLabel;
+@synthesize firstStarImageView = _firstStarImageView;
+@synthesize additionalAffiliations = _additionalAffiliations;
+@synthesize adTitleLabel = _adTitleLabel;
+@synthesize commiteeNameLabel = _commiteeNameLabel;
+
+@synthesize moneyWrapperView = _moneyWrapperView;
+@synthesize buttonClusterWrapperView = _buttonClusterWrapperView;
+@synthesize topWrapperView = _topWrapperView;
+@synthesize moneyRaisedStaticLabel = _moneyRaisedStaticLabel;
+@synthesize moneyRaisedAmountLabel = _moneyRaisedAmountLabel;
+@synthesize moneySpentStaticLabel = _moneySpentStaticLabel;
+@synthesize moneySpentAmountLabel = _moneySpentAmountLabel;
+@synthesize moneyBackground = _moneyBackground;
+@synthesize pacDataPointOne = _pacDataPointOne;
+@synthesize pacDataPointTwo = _pacDataPointTwo;
+@synthesize pacStarTwo = _pacStarTwo;
+@synthesize pacStarOne = _pacStarOne;
+
+@synthesize adImageView = _adImageView;
+@synthesize adVideoButton = _adVideoButton;
+
+@synthesize adDataDict = _adDataDict;
+@synthesize committeeDataDict = _committeeDataDict;
+@synthesize upperLeftTagButton = _upperLeftTagButton;
+@synthesize lowerLeftTagButton = _lowerLeftTagButton;
+@synthesize lowerRightTagButton = _lowerRightTagButton;
+@synthesize upperRightTagButton = _upperRightTagButton;
+@synthesize tagButtonTopLine = _tagButtonTopLine;
+@synthesize tagButtonVerticalDivider = _tagButtonVerticalDivider;
+@synthesize sourcesButton = _sourcesButton;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    // Do any additional setup after loading the view from its nib.
+    self.title = @"Ad Details";
+    //resize buttons
+    [self buildNavigationButtons];
+    [self setDisplayFromConstants];
+}
+
+
+-(void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self setAdDataDict:self.adDataDict];
+<<<<<<< HEAD
+    [self setCommitteeDataDict:self.committeeDataDict];
+    [self setPageLayout];
+=======
+    //Localytics "Ad Details" (screen)
+    [[LocalyticsSession sharedLocalyticsSession] tagScreen:@"Ad Details"];
+>>>>>>> master
+}
+
+- (void)viewDidUnload
+{
+    [self setUpperLeftTagButton:nil];
+    [self setLowerLeftTagButton:nil];
+    [self setLowerRightTagButton:nil];
+    [self setUpperRightTagButton:nil];
+    [self setAffiliationLabel:nil];
+    [self setAdTitleLabel:nil];
+    [self setCommiteeNameLabel:nil];
+    [self setSourcesButton:nil];
+    [self setMoneyRaisedStaticLabel:nil];
+    [self setMoneySpentStaticLabel:nil];
+    [self setMoneyRaisedAmountLabel:nil];
+    [self setMoneySpentAmountLabel:nil];
+    [self setTagButtonTopLine:nil];
+    [self setTagButtonVerticalDivider:nil];
+    [self setMoneyBackground:nil];
+    [self setPacDataPointOne:nil];
+    [self setPacDataPointTwo:nil];
+    [self setPacStarTwo:nil];
+    [self setPacStarOne:nil];
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+
+
+-(void)buildNavigationButtons
+{
+    //TODO: custom tint / image assets
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc]  init];
+    backButton.title = @"Back";
+    backButton.target = self;
+    backButton.action = @selector(backButtonPressed);
+
+    
+    UIBarButtonItem *shareButton = [[UIBarButtonItem alloc]  initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(displayShareActionSheet)]; 
+    if(self.navigationItem.leftBarButtonItem == nil){
+        self.navigationItem.leftBarButtonItem = backButton;
+    }
+    self.navigationItem.rightBarButtonItem = shareButton;
+    
+}
+
+
+
+-(void)setDisplayFromConstants
+{
+
+    [self.commiteeNameLabel setTextColor:kSPBlueTextColor];
+    
+    [self.affiliationLabel setTextColor:kSPBlueTextColor];
+    [self.firstStarImageView setImage:[UIImage imageNamed:kSPAdDetailAffiliationBulletImageName]];
+    [self.adTitleLabel setTextColor:kSPBlueTextColor];
+    [self.sourcesButton setTitleColor:kSPBlueTextColor forState:UIControlStateNormal];
+    
+}
+
+
+-(void)setAdDataDict:(NSDictionary *)adDataDict
+{
+    _adDataDict = adDataDict;
+    
+}
+
+-(void)setCommitteeDataDict:(NSDictionary *)committeeDataDict{
+
+    _committeeDataDict = committeeDataDict;
+ 
+}
+
+- (void)setPageLayout{
+    
+    // committee information
+    
+    
+    //TODO: the actual data 
+    [self.adTitleLabel setText: [NSString stringWithFormat:@"Ad: \"%@\"", [self.adDataDict adTitle]] ];
+    [self.adImageView setImage:[UIImage imageNamed:@"noisy_gray_background.png"]]; //set default Image
+    
+    // need to hook up money
+    self.moneyBackground.image = [UIImage imageNamed:@"details_red_bar.png"];
+    
+    //begin cached loading (TODO)
+    if([[[self adDataDict] adClaims] count] > 0){
+        [self.sourcesButton setEnabled:YES]; //Probably something else in addition to just disabling the button        
+    }else{
+        [self.sourcesButton setEnabled:NO]; 
+    }
+    
+    
+}
+
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+
+//UI Interaction
+- (IBAction)sourcesButtonPressed:(id)sender {
+    //Localytics "Sources pressed" 
+    [[LocalyticsSession sharedLocalyticsSession] tagEvent:@"Sources pressed"];    
+    
+    
+    SPAdSourcesViewController *adSources = [[SPAdSourcesViewController alloc] initWithNibName:nil bundle:nil];
+    adSources.hidesBottomBarWhenPushed = YES;
+    //set the back button to the Ad title
+    [adSources setBackTitle:@"An Ad Name"];
+    //pass the claims data 
+    [self.navigationController pushViewController:adSources animated:YES];
+}
+
+- (IBAction)tagButtonPressed:(id)sender {
+    NSLog(@"%@ pressed", sender);
+    NSString *adTaggedVal = @"unknown"; 
+
+    if([self.upperLeftTagButton isEqual:sender]){
+        //LOVE
+        [self initiateTagRequestWithValue:@"whatever"];
+        adTaggedVal = @"Love";
+    }else if([self.upperRightTagButton isEqual:sender]){
+        //FAIR
+        [self initiateTagRequestWithValue:@"whatever"];
+        adTaggedVal = @"Fair";
+    }else if([self.lowerLeftTagButton isEqual:sender]){
+        //FISHY
+        [self initiateTagRequestWithValue:@"whatever"];
+        adTaggedVal = @"Fishy";
+    }else if([self.lowerRightTagButton isEqual:sender]){
+         //Fail
+        [self initiateTagRequestWithValue:@"whatever"];
+        adTaggedVal = @"Fail";
+    }else{
+        NSLog(@"No behavior for %@", sender);
+    }
+  
+    //Localytics "Ad tagged" 
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:adTaggedVal, @"Opinion", nil];
+    [[LocalyticsSession sharedLocalyticsSession] tagEvent:@"Ad tagged" attributes:attributes];    
+}
+
+- (IBAction)adVideoButtonPressed:(id)sender{
+    //Localytics "Video pressed" 
+    [[LocalyticsSession sharedLocalyticsSession] tagEvent:@"Video pressed"];    
+
+    
+    NSString *youtubeLink = [self.adDataDict youtubeUrl];
+    if(youtubeLink){ //@"http://www.youtube.com/watch?v=iDP4qrA8hvg"
+        [self embedYouTube:youtubeLink frame:self.adImageView.frame];
+    }
+}
+
+- (void)embedYouTube:(NSString*)url frame:(CGRect)frame {  
+    NSString* embedHTML = @"<html><head><style type=\"text/css\">body {background-color: transparent;color: white;}</style></head><body style=\"margin:0\"><embed id=\"yt\" src=\"%@\" type=\"application/x-shockwave-flash\"width=\"%0.0f\" height=\"%0.0f\"></embed></body></html>";  
+    NSString* html = [NSString stringWithFormat:embedHTML, url, frame.size.width, frame.size.height];  
+    UIWebView * videoView = [[UIWebView alloc] initWithFrame:frame];  
+    videoView.delegate = self;
+    [videoView setAlpha:0.0];
+    //TODO: a loading spinner
+    [self.view addSubview:videoView];  
+    [videoView loadHTMLString:html baseURL:nil];  
+}
+
+
+-(void)backButtonPressed{
+    NSLog(@"back pressed");
+    [[self navigationController] popViewControllerAnimated:YES];
+    //TODO probably localytics
+}
+
+
+
+
+//API Interaction
+-(void)initiateTagRequestWithValue:(id)tagValue 
+{
+//    self.adDataDict;
+}
+
+-(void)tagRequestSucceeded:(NSDictionary *)responseData
+{
+
+}
+
+
+-(void)tagRequestFailed:(NSDictionary *)responseData
+{
+    
+}
+
+
+
+//UIActionSheetDelegate
+-(void)displayShareActionSheet
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Select a Share Method" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Email",@"SMS",@"Twitter",@"Facebook", nil];
+    [actionSheet showInView:self.view];
+}
+
+
+-(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    //Localytics "Ad Shared" 
+    
+    switch (buttonIndex) {
+        case SPAdDetailsShareActionSheetIndexEmail:
+            [[SPShareController sharedInstance] composeEmailForAd:self.adDataDict withImage:nil];
+            break;
+        case SPAdDetailsShareActionSheetIndexSms:
+            [[SPShareController sharedInstance] composeMessageForAd:self.adDataDict];
+            break;
+        case SPAdDetailsShareActionSheetIndexTwitter:
+            [[SPShareController sharedInstance] composeTweetForAd:self.adDataDict withImage:nil];
+            break;
+        case SPAdDetailsShareActionSheetIndexFacebook:
+            [[SPShareController sharedInstance] composeFacebookForAd:self.adDataDict];
+            break;            
+        default:
+            break;
+    }
+}
+
+
+//UIWebViewDelegate
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [UIView animateWithDuration:1.0 animations:^{[webView setAlpha:0.5];} completion:^(BOOL finished){}];
+    //TODO probably localytics
+
+}
+
+
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    //TODO probably localytics
+
+    [webView removeFromSuperview]; //ARC will collect it.
+    UIAlertView *alert = [[UIAlertView  alloc] initWithTitle:@"Oops!" message:@"Looks like we can't get that video, sorry." delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+}
+
+
+@end

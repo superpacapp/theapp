@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  lat: 1.5
+  long: 1.5
+  suppopp: MyString
+  candidate: MyString
+  comment: MyText
+
+two:
+  lat: 1.5
+  long: 1.5
+  suppopp: MyString
+  candidate: MyString
+  comment: MyText
