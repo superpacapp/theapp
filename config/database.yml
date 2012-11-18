@@ -1,11 +1,11 @@
-# MySql Version
+# Postgres version
 
 development:
   adapter: postgresql
   encoding: unicode
   database: superpacapp-api
   pool: 5
-  username: bob
+  username: 
   password:
 
 # Warning: The database defined as "test" will be erased and
@@ -16,6 +16,6 @@ test:
     encoding: unicode
     database: superpacapp-api_test
     pool: 5
-    username: bob
+    username:
     password:
 
